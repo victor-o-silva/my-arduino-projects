@@ -28,6 +28,7 @@ OneButtonTiny btnMemory2 = OneButtonTiny(BTN_MEMORY_2_PIN,  true, true);
 
 // Buzzer
 const int BUZZER = 13;
+const int SHORT_BEEP_DURATION = 200;
 
 // Timing
 const int MIN_SECONDS = 0;
@@ -67,6 +68,12 @@ void setupPorts(){
   pinMode(BUZZER, OUTPUT);
 }
 
+void beep(){
+  digitalWrite(BUZZER, HIGH);
+  delay(SHORT_BEEP_DURATION);
+  digitalWrite(BUZZER, LOW);
+}
+
 int readMemorySeconds(int memoryIndex){
   if (memoryValues[memoryIndex] >= 0){
     // value already read and stored in the global array: don't read from the memory again
@@ -85,7 +92,7 @@ int readMemorySeconds(int memoryIndex){
 void writeMemorySeconds(int memoryIndex, int seconds){
   if (memoryValues[memoryIndex] == seconds){
     // Memory already has the same value, no need to write it again
-    // ToDo: Quick beep
+    beep();
     return;
   }
 
@@ -93,7 +100,7 @@ void writeMemorySeconds(int memoryIndex, int seconds){
   EEPROM.write(address, lowByte(seconds));
   EEPROM.write(address + 1, highByte(seconds));
   memoryValues[memoryIndex] = seconds;
-  // ToDo: Quick beep
+  beep();
 }
 
 void handleBtnSwitchGoClick(){
@@ -127,7 +134,7 @@ void handleBtnSwitchGoLongPress(){
         printTick();
       }
       else {
-        // ToDo: Quick beep
+        beep();
       }
       break;
     case TICKING:
